@@ -19,29 +19,28 @@ class TaskViewController: UIViewController {
     }()
     
     private lazy var saveButton: UIButton = {
-        var buttonConfiguration = UIButton.Configuration.filled() // закрашенная кнопка
-        buttonConfiguration.baseBackgroundColor = UIColor(
-            red: 21/255,
-            green: 101/22,
-            blue: 192/22,
-            alpha: 194/255
+        createButton(
+            withTitle: "Save Task",
+            andColor: UIColor(red: 21/255, green: 101/255, blue: 192/255, alpha: 194/255),
+            action: UIAction { _ in
+                self.dismiss(animated: true)
+            })
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        createButton(
+            withTitle: "Cancel",
+            andColor: .systemRed,
+            action: UIAction { _ in
+                self.dismiss(animated: true)
+            })
         
-        )
-        
-        var attributes = AttributeContainer()
-        
-        attributes.font = UIFont.boldSystemFont(ofSize: 18)
-        buttonConfiguration.attributedTitle = AttributedString("Save Task", attributes: attributes)
-        
-        return UIButton(configuration: buttonConfiguration, primaryAction: UIAction { _ in
-            self.dismiss(animated: true)
-        })
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setup(subviews: taskTextField, saveButton) //констрэйнты задаем после задания всех параметров
+        setup(subviews: taskTextField, saveButton, cancelButton) //констрэйнты задаем после задания всех параметров и добавления кнопок
         setConstrains()
     }
     
@@ -56,19 +55,36 @@ class TaskViewController: UIViewController {
         
         NSLayoutConstraint.activate([ //установка констрэйнта
             taskTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            // отступ сверху
-            taskTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40), //отступ слево
+            taskTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             taskTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
-            // отступ справо
         ])
         
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([ //установка констрэйнта
+        NSLayoutConstraint.activate([
             saveButton.topAnchor.constraint(equalTo: taskTextField.bottomAnchor, constant: 20),
             saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
         ])
         
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            cancelButton.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 20),
+            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
+    }
+    
+    private func createButton(withTitle title: String, andColor color: UIColor, action: UIAction) -> UIButton {
+        var buttonConfiguration = UIButton.Configuration.filled() // закрашенная кнопка
+        buttonConfiguration.baseBackgroundColor = color
+        
+        var attributes = AttributeContainer()
+        
+        attributes.font = UIFont.boldSystemFont(ofSize: 18)
+        buttonConfiguration.attributedTitle = AttributedString(title, attributes: attributes)
+        
+        return UIButton(configuration: buttonConfiguration, primaryAction: action)
     }
 }
